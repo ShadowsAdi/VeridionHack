@@ -97,7 +97,7 @@ def query_ollama(system_word):
         Respond only with the best word according to the rules and it MUST be in the Word list.
         """
 
-    url = "http://localhost:11434/api/chat"
+    url = "http://localhost:11434/api/generate"
     payload = {
         "model": "llama3.2:latest",
         "messages": prompt,
