@@ -126,6 +126,7 @@ def what_beats(word):
 def play_game():
     for round_id in range(1, NUM_ROUNDS+1):
         round_num = -1
+        sys_word = ""
         while round_num != round_id:
             response = requests.get(get_url)
             print(response.json())
