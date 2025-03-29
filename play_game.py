@@ -105,7 +105,7 @@ def query_ollama(system_word):
 
     url = "http://localhost:11434/api/generate"
     payload = {
-        "model": "qwen2.5:0.5b",
+        "model": "qwen2.5:3b",
         "prompt": prompt,
         "stream": False,
         "options": {
