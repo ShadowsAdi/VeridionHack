@@ -75,7 +75,7 @@ word_list = [
 def query_ollama(system_word):
     prompt = f"""
         ### Context:
-        You are playing a word-based strategy game. 
+        You are playing a word-based strategy game ( like rock-paper-scrissors ). 
         Your task is to select the most cost-efficient word from a predefined list that can realistically defeat the system word.
         
         ### Constraints:
