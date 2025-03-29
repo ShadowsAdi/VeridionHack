@@ -75,43 +75,58 @@ word_list = [
 def query_ollama(system_word):
     prompt = f"""
         ### Context:
-        You are playing a word-based strategy game ( like rock-paper-scrissors ). 
-        Your task is to select the most cost-efficient word from a predefined list that can realistically defeat the system word.
+            You are a helpful assistant playing a word-based strategy game ( like rock-paper-scrissors ). 
+            Your task is to select the most cost-efficient word from a predefined list that can realistically defeat the system word.
         
         ### Constraints:
-        1. The system can be defeated by a word from the list given as "Word List".
-        2. Choose the word from the list that logically defeats or overcome the system word.
-        3. The key is to choose a word that accomplishes this task and is cost efficient ( Cost is retrieved from the Word List JSON ).
-        4. Choose lowest cost word that can logically overpower or neutralize the system word.
-        5. The chosen word must come from the word list.
-        6. Response must be only the word chosen.
+            1. The system can be defeated by a word from the list given as "Word List".
+            2. The key is to choose a word that accomplishes this task and is cost efficient ( Cost is retrieved from the Word List JSON ).
+            3. Choose lowest cost word that can logically overpower or neutralize the system word.
+            5. The word must be the lowest cost possible.
+            6. Response must be only the word chosen.
+            7. You must choose at least one word which is more powerful than the system word.
 
         ### Word List which you MUST USE:
         {json.dumps(word_list, indent=2)}
         
         ### System Word:
-        "{system_word}"
+            "{system_word}"
         
+        ### Examples:
+            If the system word is "Galaxy", the best word to defeat it is "Supermassive Black Hole", because it could logically supercede it and it's cost is lower than "Entropy".
+            If the system word is "Sun", the best word to defeat it is "Neutron Star", because it could logically supercede it and it's cost is lower than "Supermassive Black Hole".
+
         ### Output:
-        The best word, according to the rules from the list to defeat it.
-        Respond only with the best word according to the rules and it MUST be in the Word list.
+            The best word, according to the rules from the list to defeat it.
+            Respond only with the best word according to the rules and it MUST be in the Word list.
+            Your Response MUST only contain one word taken from the word list.
+            No additional information is needed.
         """
 
     url = "http://localhost:11434/api/generate"
     payload = {
-        "model": "llama3.2:latest",
+        "model": "phi3.5:latest",
         "prompt": prompt,
-        "stream": False
+        "stream": False,
+        "options": {
+            "temperature": 0.3,
+            "max_tokens": 10,
+            "frequency_penalty": 0.0,
+            "presence_penalty": 0.0
+        }
     }
+
+    #print(prompt)
 
     try:
         response = requests.post(url, json=payload)
         response.raise_for_status()
         result = response.json()
-        chosen_word = result.get("response", "").strip()
-        print(chosen_word)
+        print(result.get("response", ""))
+        chosen_word = result.get("response", "").strip('"').lower()
+        print(f"Attack word: {chosen_word}")
 
-        for index, word_info in enumerate(word_list, start=1):  # Start index at 1
+        for index, word_info in enumerate(word_list, start=1):
             if word_info["word"].lower() == chosen_word.lower():
                 return index
 
@@ -145,8 +160,8 @@ def play_game():
         print(response.json())
 
 def play_game_tests():
-    choosen_word = what_beats("police")
-    data = {"player_id": "KAGHiVOdmh", "word_id": choosen_word, "round_id": 0}
+    choosen_word = what_beats("hotel")
+    data = {"player_id": 256, "word_id": choosen_word, "round_id": 0}
     print(data)
 
 #play_game_tests()
