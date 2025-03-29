@@ -100,7 +100,7 @@ def query_ollama(system_word):
     url = "http://localhost:11434/api/generate"
     payload = {
         "model": "llama3.2:latest",
-        "messages": prompt,
+        "prompt": prompt,
         "stream": False
     }
 
